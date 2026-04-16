@@ -1,2 +1,2 @@
 # video-gallery
-FastAPI based web application providing thumbnail and search function, showing local folder video files as gallery
+A local FastAPI-based video gallery that scans folders, generates thumbnails, supports filename search, and plays videos in the browser.
