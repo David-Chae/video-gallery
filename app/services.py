@@ -1,6 +1,13 @@
 from pathlib import Path
 import subprocess
+import hashlib
 from .config import VIDEO_DIR, THUMB_DIR, VIDEO_EXTS
+import math
+
+
+
+def get_thumb_name(rel_video: str) -> str:
+    return hashlib.md5(rel_video.encode("utf-8")).hexdigest() + ".jpg"
 
 def make_thumbnail(video_path: Path, thumb_path: Path):
     if thumb_path.exists():
@@ -9,9 +16,11 @@ def make_thumbnail(video_path: Path, thumb_path: Path):
     cmd = [
         "ffmpeg",
         "-y",
-        "-ss", "00:00:03",
         "-i", str(video_path),
-        "-frames:v", "1",
+        "-ss", "00:00:02",
+        "-vframes", "1",
+        "-vf", "scale=320:-1",
+        "-q:v", "2",
         str(thumb_path)
     ]
     try:
@@ -22,19 +31,31 @@ def make_thumbnail(video_path: Path, thumb_path: Path):
             stderr=subprocess.DEVNULL,
             timeout=20
         )
-    except Exception:
-        pass
+        if result.returncode != 0:
+            print("FFMPEG ERROR:", result.stderr)
+    except Exception as e:
+        print("Thumbnail error:", e)
 
 def scan_videos(query: str = ""):
     items = []
 
     for file in VIDEO_DIR.rglob("*"):
         if file.is_file() and file.suffix.lower() in VIDEO_EXTS:
-            if query and query.lower() not in file.stem.lower():
+            rel_video = file.relative_to(VIDEO_DIR).as_posix()
+            folder = str(file.parent.relative_to(VIDEO_DIR))
+
+            search_text = " ".join([
+                file.stem.lower(),      # 파일명: ep1
+                file.name.lower(),      # 파일명+확장자: ep1.mkv
+                folder.lower(),         # 폴더명: anime
+                rel_video.lower(),      # 전체 경로: anime/ep1.mkv
+            ])
+
+            if query and query.lower() not in search_text:
                 continue
 
             rel_video = file.relative_to(VIDEO_DIR).as_posix()
-            thumb_name = rel_video.replace("/", "__") + ".jpg"
+            thumb_name = get_thumb_name(rel_video)
             thumb_path = THUMB_DIR / thumb_name
 
             if not thumb_path.exists():
@@ -42,6 +63,7 @@ def scan_videos(query: str = ""):
 
             items.append({
                 "name": file.name,
+                "stem": file.stem,
                 "path": rel_video,  # 추가
                 "folder": str(file.parent.relative_to(VIDEO_DIR)),  # 추가
                 "video_url": f"/videos/{rel_video}",
@@ -50,3 +72,28 @@ def scan_videos(query: str = ""):
 
     items.sort(key=lambda x: x["name"].lower())
     return items
+
+def paginate_items(items, page: int = 1, per_page: int = 25):
+    total_items = len(items)
+    total_pages = max(1, math.ceil(total_items / per_page))
+
+    if page < 1:
+        page = 1
+    if page > total_pages:
+        page = total_pages
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    paged_items = items[start:end]
+
+    return {
+        "items": paged_items,
+        "page": page,
+        "per_page": per_page,
+        "total_items": total_items,
+        "total_pages": total_pages,
+        "has_prev": page > 1,
+        "has_next": page < total_pages,
+        "prev_page": page - 1,
+        "next_page": page + 1,
+    }
