@@ -42,7 +42,8 @@ def scan_videos(query: str = ""):
 
             items.append({
                 "name": file.name,
-                "stem": file.stem,
+                "path": rel_video,  # 추가
+                "folder": str(file.parent.relative_to(VIDEO_DIR)),  # 추가
                 "video_url": f"/videos/{rel_video}",
                 "thumb_url": f"/thumbnails/{thumb_name}" if thumb_path.exists() else "",
             })
