@@ -14,16 +14,63 @@ VIDEO_EXTS = {".mp4", ".mkv", ".webm", ".mov", ".avi"}
 def get_thumb_name(rel_video: str) -> str:
     return hashlib.md5(rel_video.encode("utf-8")).hexdigest() + ".jpg"
 
+def get_video_duration(video_path: Path) -> float | None:
+    cmd = [
+        "ffprobe",
+        "-v", "error",
+        "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1",
+        str(video_path)
+    ]
+
+    try:
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=15
+        )
+
+        if result.returncode != 0:
+            return None
+
+        return float(result.stdout.strip())
+    except Exception:
+        return None
+
+
+def seconds_to_timestamp(seconds: float) -> str:
+    total = max(0, int(seconds))
+    h = total // 3600
+    m = (total % 3600) // 60
+    s = total % 60
+    return f"{h:02d}:{m:02d}:{s:02d}"
+
+
 
 def make_thumbnail(video_path: Path, thumb_path: Path) -> bool:
     if thumb_path.exists():
         return True
 
+    duration = get_video_duration(video_path)
+
+    if duration is None:
+        seek_time = "00:00:30"
+    else:
+        # 전체 길이의 30% 지점
+        target_seconds = duration * 0.30
+
+        # 너무 짧으면 2초 이상
+        # 너무 길어도 초반부만 보게 10분 이내로 제한
+        target_seconds = max(2, min(target_seconds, 600))
+        seek_time = seconds_to_timestamp(target_seconds)
+
     cmd = [
         "ffmpeg",
         "-y",
         "-i", str(video_path),
-        "-ss", "00:00:02",
+        "-ss", seek_time,
         "-vframes", "1",
         "-vf", "scale=320:-1",
         "-q:v", "2",
@@ -45,7 +92,7 @@ def make_thumbnail(video_path: Path, thumb_path: Path) -> bool:
             return False
 
         if thumb_path.exists():
-            print(f"[OK]   {video_path.name}")
+            print(f"[OK]   {video_path.name} @ {seek_time}")
             return True
 
         print(f"[FAIL] {video_path} -> thumbnail not created")
