@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Gallery</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Video Gallery</h1>
+
+    <form method="get" action="/" class="search-bar">
+      <input type="text" name="q" value="{{ query }}" placeholder="파일명 검색..." />
+      <button type="submit">검색</button>
+    </form>
+
+    <div class="grid">
+      {% for item in videos %}
+      <a class="card" href="/player?video={{ item.video_url | urlencode }}">
+        <div class="thumb-wrap">
+          {% if item.thumb_url %}
+          <img src="{{ item.thumb_url }}" alt="{{ item.name }}" class="thumb" />
+          {% else %}
+          <div class="thumb placeholder">No Preview</div>
+          {% endif %}
+        </div>
+        <div class="filename">{{ item.name }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>
