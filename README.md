@@ -24,11 +24,4 @@ pip install -r requirements.txt
 ```bash
 uvicorn app.main:app --reload
 ```
-브라우저에서 http://127.0.0.1:8000 접속 그리고 `run.bat`는 이렇게 두면 편하다.
-
-```bat
-@echo off
-call .venv\Scripts\activate
-uvicorn app.main:app --reload
-pause
-```
+Access http://127.0.0.1:8000 from browser.
