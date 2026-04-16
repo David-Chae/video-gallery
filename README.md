@@ -19,15 +19,18 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 ```
+### Pre-Requisite
+- Create videos and thumbnails folder in video-gallery folder which already contain app folder.
+- app 폴더가 있는 video-gallery 폴더 안에 videos 그리고 thumbnails 폴더를 만들것.
 
-Create videos and thumbnails folder in video-gallery folder which already contain app folder.
-app 폴더가 있는 video-gallery 폴더 안에 videos 그리고 thumbnails 폴더를 만들것.
-
-Put your video files in the videos folder.
-비디오 파일을 videos 폴더 안에 넣을것.
+- Put your video files in the videos folder.
+- 비디오 파일을 videos 폴더 안에 넣을것.
 
 ## How to Run
 ```bash
 uvicorn app.main:app --reload
 ```
+Or double-click the run.bat file.
+아님 run.bat 파일을 더블클릭할 것. 
+
 Access http://127.0.0.1:8000 from browser.
