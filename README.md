@@ -18,6 +18,7 @@ A local FastAPI-based video gallery that scans folders, generates thumbnails, su
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
+```
 
 ## How to Run
 ```bash
@@ -30,3 +31,4 @@ uvicorn app.main:app --reload
 call .venv\Scripts\activate
 uvicorn app.main:app --reload
 pause
+```
