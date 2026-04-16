@@ -20,6 +20,12 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+Create videos and thumbnails folder in video-gallery folder which already contain app folder.
+app 폴더가 있는 video-gallery 폴더 안에 videos 그리고 thumbnails 폴더를 만들것.
+
+Put your video files in the videos folder.
+비디오 파일을 videos 폴더 안에 넣을것.
+
 ## How to Run
 ```bash
 uvicorn app.main:app --reload
