@@ -1,8 +1,34 @@
+:root {
+  --bg: #111;
+  --text: #eee;
+  --subtext: #aaa;
+  --card-bg: #1b1b1b;
+  --card-hover: #222;
+  --input-bg: #fff;
+  --input-text: #111;
+  --button-bg: #2b2b2b;
+  --button-text: #eee;
+  --border: #333;
+}
+
+body.light {
+  --bg: #f5f5f5;
+  --text: #111;
+  --subtext: #666;
+  --card-bg: #ffffff;
+  --card-hover: #f0f0f0;
+  --input-bg: #ffffff;
+  --input-text: #111;
+  --button-bg: #e5e5e5;
+  --button-text: #111;
+  --border: #d0d0d0;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #111;
-  color: #eee;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .container {
@@ -11,8 +37,25 @@ body {
   padding: 24px;
 }
 
-h1 {
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 20px;
+}
+
+h1 {
+  margin: 0;
+}
+
+#theme-toggle {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--button-bg);
+  color: var(--button-text);
+  cursor: pointer;
 }
 
 .search-bar {
@@ -25,13 +68,17 @@ h1 {
   flex: 1;
   padding: 12px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--input-text);
 }
 
 .search-bar button {
   padding: 12px 18px;
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 8px;
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
 }
 
@@ -45,14 +92,16 @@ h1 {
   display: block;
   text-decoration: none;
   color: inherit;
-  background: #1b1b1b;
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
+  border: 1px solid var(--border);
 }
 
 .card:hover {
   transform: translateY(-3px);
+  background: var(--card-hover);
 }
 
 .thumb-wrap {
@@ -61,21 +110,50 @@ h1 {
   background: #222;
 }
 
-.thumb, .placeholder {
+.thumb,
+.placeholder {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .filename {
-  padding: 12px;
+  padding: 12px 12px 4px 12px;
   font-size: 14px;
   word-break: break-all;
 }
 
-.player-box {
-  margin-top: 20px;
-  background: #000;
-  padding: 16px;
-  border-radius: 12px;
+.folder {
+  padding: 0 12px 12px 12px;
+  font-size: 12px;
+  color: var(--subtext);
+}
+
+.result-count {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--subtext);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  margin-bottom: 20px;
+}
+
+.page-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  text-decoration: none;
+  border: 1px solid var(--border);
+}
+
+.page-info {
+  font-size: 14px;
+  color: var(--subtext);
 }
