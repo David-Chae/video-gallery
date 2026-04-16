@@ -8,12 +8,16 @@
 </head>
 <body>
   <div class="container">
-    <h1>Video Gallery</h1>
-
+	<div class="top-bar">
+		<h1>Video Gallery</h1>
+		<button id="theme-toggle" type="button">🌙 Dark</button>
+	</div>
     <form method="get" action="/" class="search-bar">
       <input type="text" name="q" value="{{ query }}" placeholder="파일명 검색..." />
       <button type="submit">검색</button>
     </form>
+
+    <div class="result-count">총 {{ total_items }}개</div>
 
     <div class="grid">
       {% for item in videos %}
@@ -25,11 +29,46 @@
           <div class="thumb placeholder">No Preview</div>
           {% endif %}
         </div>
-        <div class="filename">{{ item.name }}</div>
+        <div class="filename" title="{{ item.name }}">{{ item.stem }}</div>
         <div class="folder">{{ item.folder }}</div>
       </a>
       {% endfor %}
     </div>
+
+    <div class="pagination">
+      {% if has_prev %}
+        <a href="/?q={{ query | urlencode }}&page={{ prev_page }}" class="page-btn">이전</a>
+      {% endif %}
+
+      <span class="page-info">{{ page }} / {{ total_pages }}</span>
+
+      {% if has_next %}
+        <a href="/?q={{ query | urlencode }}&page={{ next_page }}" class="page-btn">다음</a>
+      {% endif %}
+    </div>
   </div>
+  <script>
+	  const body = document.body;
+	  const toggleBtn = document.getElementById("theme-toggle");
+
+	  function applyTheme(theme) {
+		if (theme === "light") {
+		  body.classList.add("light");
+		  toggleBtn.textContent = "🌞 Light";
+		} else {
+		  body.classList.remove("light");
+		  toggleBtn.textContent = "🌙 Dark";
+		}
+	  }
+
+	  const savedTheme = localStorage.getItem("theme") || "dark";
+	  applyTheme(savedTheme);
+
+	  toggleBtn.addEventListener("click", () => {
+		const newTheme = body.classList.contains("light") ? "dark" : "light";
+		localStorage.setItem("theme", newTheme);
+		applyTheme(newTheme);
+	  });
+	</script>
 </body>
 </html>
