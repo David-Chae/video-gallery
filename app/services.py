@@ -24,20 +24,27 @@ def make_thumbnail(video_path: Path, thumb_path: Path):
         str(thumb_path)
     ]
     try:
-        subprocess.run(
+        result = subprocess.run(
             cmd,
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
             timeout=20
         )
         if result.returncode != 0:
-            print("FFMPEG ERROR:", result.stderr)
+            print(f"FFMPEG ERROR: {video_path.name}")
+            print(result.stderr)
+            return False
+        
+        return thumb_path.exists()
+    
     except Exception as e:
         print("Thumbnail error:", e)
+        return False
 
 def scan_videos(query: str = ""):
     items = []
+    query_terms = query.strip().lower().split()
 
     for file in VIDEO_DIR.rglob("*"):
         if file.is_file() and file.suffix.lower() in VIDEO_EXTS:
@@ -58,8 +65,9 @@ def scan_videos(query: str = ""):
             thumb_name = get_thumb_name(rel_video)
             thumb_path = THUMB_DIR / thumb_name
 
-            if not thumb_path.exists():
-                make_thumbnail(file, thumb_path)
+            # 썸네일이 없으면 일단 생성하지 않고 placeholder만 보여줌
+            #if not thumb_path.exists():
+            #    make_thumbnail(file, thumb_path)
 
             items.append({
                 "name": file.name,
