@@ -39,6 +39,19 @@
 
     <div class="result-count">총 {{ total_items }}개</div>
 
+	<form method="get" action="/" class="search-bar">
+	  <input type="text" name="q" value="{{ query }}" placeholder="파일명 검색..." />
+	  <button type="submit">검색</button>
+	</form>
+	
+	{% if videos %}
+	  <div class="actions">
+	    <a class="playlist-open-btn" href="/playlist?q={{ query | urlencode }}">
+	      플레이리스트로 열기
+	    </a>
+	  </div>
+	{% endif %}
+
     <div class="grid">
       {% for item in videos %}
       <a class="card" href="/player?video={{ item.video_url | urlencode }}">
