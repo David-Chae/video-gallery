@@ -21,6 +21,21 @@ app.mount("/videos", StaticFiles(directory=str(VIDEO_DIR)), name="videos")
 app.mount("/thumbnails", StaticFiles(directory=str(THUMB_DIR)), name="thumbnails")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
+
+@app.get("/playlist", response_class=HTMLResponse)
+async def playlist(request: Request, q: str = ""):
+    videos = scan_videos(q)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="playlist.html",
+        context={
+            "videos": videos,
+            "query": q,
+            "initial_video": videos[0] if videos else None,
+        }
+    )
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, q: str = "", page: int = 1):
     videos = scan_videos(q)
