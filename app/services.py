@@ -9,6 +9,18 @@ import math
 def get_thumb_name(rel_video: str) -> str:
     return hashlib.md5(rel_video.encode("utf-8")).hexdigest() + ".jpg"
 
+def get_search_keywords() -> list[str]:
+    keywords = []
+
+    if not VIDEO_DIR.exists():
+        return keywords
+
+    for entry in VIDEO_DIR.iterdir():
+        if entry.is_dir():
+            keywords.append(entry.name)
+
+    return sorted(keywords, key=str.lower)
+
 def make_thumbnail(video_path: Path, thumb_path: Path):
     if thumb_path.exists():
         return
