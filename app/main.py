@@ -7,7 +7,7 @@ from .config import VIDEO_DIR, THUMB_DIR, STATIC_DIR, TEMPLATES_DIR
 from .services import scan_videos
 from pathlib import Path
 from urllib.parse import quote
-from .services import scan_videos, paginate_items
+from .services import scan_videos, paginate_items, get_search_keywords
 
 VIDEO_DIR.mkdir(exist_ok=True)
 THUMB_DIR.mkdir(exist_ok=True)
