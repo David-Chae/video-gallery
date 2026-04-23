@@ -17,6 +17,26 @@
       <button type="submit">검색</button>
     </form>
 
+	{% if keywords %}
+	<div class="keyword-bar">
+	  <div class="keyword-title">폴더 키워드</div>
+	  <div class="keyword-list">
+	    {% for keyword in keywords %}
+	      <a
+	        class="keyword-chip {% if query == keyword %}active{% endif %}"
+	        href="/?q={{ keyword | urlencode }}"
+	      >
+	        {{ keyword }}
+	      </a>
+	    {% endfor %}
+	
+	    {% if query %}
+	      <a class="keyword-chip clear" href="/">전체 보기</a>
+	    {% endif %}
+	  </div>
+	</div>
+	{% endif %}
+
     <div class="result-count">총 {{ total_items }}개</div>
 
     <div class="grid">
