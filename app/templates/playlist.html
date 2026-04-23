@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>플레이리스트</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="playlist-page">
+    <div class="playlist-main">
+      {% if initial_video %}
+        <video
+          id="videoPlayer"
+          class="playlist-player"
+          controls
+          autoplay
+          src="{{ initial_video.video_url }}"
+        ></video>
+
+        <div class="now-playing">
+          <div class="now-playing-label">현재 재생</div>
+          <div id="nowPlayingTitle">{{ initial_video.name }}</div>
+          <div id="nowPlayingFolder" class="muted">{{ initial_video.folder }}</div>
+        </div>
+      {% else %}
+        <div class="empty-state">검색 결과가 없습니다.</div>
+      {% endif %}
+    </div>
+
+    <aside class="playlist-sidebar">
+      <div class="playlist-header">
+        <h2>재생목록</h2>
+        <div class="muted">검색어: {{ query }}</div>
+      </div>
+
+      <div id="playlistItems" class="playlist-items">
+        {% for video in videos %}
+          <div
+            class="playlist-item {% if loop.first %}active{% endif %}"
+            data-video-url="{{ video.video_url }}"
+            data-video-name="{{ video.name }}"
+            data-video-folder="{{ video.folder }}"
+          >
+            <div class="playlist-item-title">{{ video.name }}</div>
+            <div class="playlist-item-folder">{{ video.folder }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const player = document.getElementById("videoPlayer");
+    const nowPlayingTitle = document.getElementById("nowPlayingTitle");
+    const nowPlayingFolder = document.getElementById("nowPlayingFolder");
+    const items = Array.from(document.querySelectorAll(".playlist-item"));
+
+    function activateItem(item) {
+      items.forEach(el => el.classList.remove("active"));
+      item.classList.add("active");
+
+      const videoUrl = item.dataset.videoUrl;
+      const videoName = item.dataset.videoName;
+      const videoFolder = item.dataset.videoFolder;
+
+      player.src = videoUrl;
+      player.play();
+
+      nowPlayingTitle.textContent = videoName;
+      nowPlayingFolder.textContent = videoFolder;
+    }
+
+    items.forEach(item => {
+      item.addEventListener("click", () => activateItem(item));
+    });
+
+    player?.addEventListener("ended", () => {
+      const currentIndex = items.findIndex(item => item.classList.contains("active"));
+      const nextIndex = currentIndex + 1;
+
+      if (nextIndex < items.length) {
+        activateItem(items[nextIndex]);
+      }
+    });
+  </script>
+</body>
+</html>
