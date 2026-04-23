@@ -58,9 +58,6 @@ def scan_videos(query: str = ""):
     items = []
     query_terms = query.strip().lower().split()
 
-    if query_terms and not all(term in search_text for term in query_terms):
-        continue
-
     for file in VIDEO_DIR.rglob("*"):
         if file.is_file() and file.suffix.lower() in VIDEO_EXTS:
             rel_video = file.relative_to(VIDEO_DIR).as_posix()
@@ -73,7 +70,7 @@ def scan_videos(query: str = ""):
                 rel_video.lower(),      # 전체 경로: anime/ep1.mkv
             ])
 
-            if query and query.lower() not in search_text:
+            if query_terms and not all(term in search_text for term in query_terms):
                 continue
 
             rel_video = file.relative_to(VIDEO_DIR).as_posix()
