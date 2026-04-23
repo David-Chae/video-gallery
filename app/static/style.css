@@ -157,3 +157,42 @@ h1 {
   font-size: 14px;
   color: var(--subtext);
 }
+
+.keyword-bar {
+  margin: 16px 0 20px;
+}
+
+.keyword-title {
+  font-size: 14px;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.keyword-chip {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  background: #2a2a2a;
+  color: #f5f5f5;
+  font-size: 14px;
+}
+
+.keyword-chip:hover {
+  transform: translateY(-1px);
+}
+
+.keyword-chip.active {
+  font-weight: 700;
+  outline: 1px solid #888;
+}
+
+.keyword-chip.clear {
+  opacity: 0.85;
+}
