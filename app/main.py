@@ -24,6 +24,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, q: str = "", page: int = 1):
     videos = scan_videos(q)
+    keywords = get_search_keywords()
     pagination = paginate_items(videos, page=page, per_page=25)
 
     return templates.TemplateResponse(
@@ -32,6 +33,7 @@ async def index(request: Request, q: str = "", page: int = 1):
         context={
             "videos": pagination["items"],
             "query": q,
+            "keywords": keywords,
             "page": pagination["page"],
             "total_pages": pagination["total_pages"],
             "total_items": pagination["total_items"],
